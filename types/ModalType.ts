@@ -8,8 +8,8 @@ export type ModalType = {
     subFunc?: () => void,
     subFuncTitle?: string,
     arrDataCloseEmty?: any | null,
-    setServiceValidation?: any | null
-    modalRef: React.RefObject<HTMLDialogElement>
-    modalForm: React.RefObject<HTMLFormElement>
+    setServiceValidation?: any | null,
+    modalRef: React.RefObject<HTMLDialogElement> | any,
+    modalForm: React.RefObject<HTMLFormElement> | any,
     size?: string
 }

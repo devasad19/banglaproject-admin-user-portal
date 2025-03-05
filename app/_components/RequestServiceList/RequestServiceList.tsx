@@ -1,7 +1,16 @@
-import Link from "next/link";
-import React from "react";
+"use client";
+import React,{ useRef }  from "react";
+import ApproveModal from "./ApproveModal";
+import { modelOpen } from "@/helper";
 
 const RequestServiceList = () => {
+  const approveModalRef = useRef(null);
+
+  const handleApproved = () =>{
+    modelOpen(approveModalRef);
+  }
+
+
   return (
     <>
       <section>
@@ -56,12 +65,18 @@ const RequestServiceList = () => {
                 <td className="text-sm text-center px-2">Paid Status</td>
                 <td className="text-sm text-center px-2">Publish/Unpublish</td>
                 <td className="text-sm text-center px-2">Pending</td>
-                <td className="text-sm text-center px-2">Approved</td>
+                <td className="text-sm text-center px-2">
+                  <button onClick={handleApproved} className="bg-primary text-white px-2 py-1 rounded-md">
+                  Approved
+                  </button>
+                  </td>
               </tr>
             </tbody>
           </table>
         </div>
       </section>
+
+      <ApproveModal addModal={approveModalRef}/>
     </>
   );
 };

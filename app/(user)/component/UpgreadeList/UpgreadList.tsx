@@ -191,7 +191,7 @@ const UpgreadList = ({ id, validities }: Tprops) => {
     }
   }, [updatedTotalAmount, activeValidaty]);
 
-  console.log({ selectedFeatureInfo });
+  // console.log({ selectedFeatureInfo });
 
   const handleOrderNow = async () => {
     setIsLoading(true);
@@ -310,6 +310,8 @@ const UpgreadList = ({ id, validities }: Tprops) => {
     }
   };
 
+  console.log({ selectedFeatureInfo, activeValidaty });
+
   return (
     <>
       <section>
@@ -337,7 +339,6 @@ const UpgreadList = ({ id, validities }: Tprops) => {
                     <th colSpan={4} className="py-4">
                       Plans
                     </th>
-                    <th className="py-4">Price (TK)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -374,12 +375,6 @@ const UpgreadList = ({ id, validities }: Tprops) => {
                           );
                         })
                       : ""}
-                    <td className="border border-gray-200 w-12 h-28">
-                      <div className="text-center flex items-center justify-center">
-                        {percentagePrice}
-                        {/* {activeValidaty?.rate} */}
-                      </div>
-                    </td>
                   </tr>
                   {features && features?.length > 0 ? (
                     features?.map((fItem, fIndex) => {
@@ -438,11 +433,6 @@ const UpgreadList = ({ id, validities }: Tprops) => {
                               className="border border-gray-200 w-12 h-28"
                             ></td>
                           ))}
-                          <td className="border border-gray-200 w-12 h-28">
-                            <div className="text-center flex items-center justify-center">
-                              {selectedPrices[fIndex] || 0}
-                            </div>
-                          </td>
                         </tr>
                       );
                     })
@@ -459,21 +449,30 @@ const UpgreadList = ({ id, validities }: Tprops) => {
                 </tbody>
               </table>
 
-              <div className="w-full bg-green-100 text-gray-700 flex items-center justify-between py-4">
-                <div className="w-[50%] flex items-center justify-center">
-                  <div className="flex items-center gap-2">
-                    <h1 className="text-16 font-semibold">Total Amount:</h1>
-                    <span>{TotalAmountOld}</span>
-                  </div>
-                </div>
-                <div className="w-[50%] flex items-center justify-center">
+              <div className="w-full bg-green-100 text-gray-700 flex items-center justify-end py-4">
+                <div className="w-[50%] flex flex-col items-center justify-end">
                   <div className="flex items-center gap-2">
                     <h1 className="text-16 font-semibold">
-                      Total Updated Amount:
+                      Total Updated Plan:
                     </h1>
                     <span className="text-16 font-semibold">
-                      {percentagePrice + updatedTotalAmount}
+                      {percentagePrice + updatedTotalAmount} TK
                     </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-16 font-semibold">
+                      {activeValidaty?.day} Days
+                    </span>
+                    |
+                    {selectedFeatureInfo?.map((item: any, index: number) => (
+                      <span key={index} className="text-16 font-semibold">
+                        {item?.featureSelectedData?.planName}{" "}
+                        {
+                          item?.featureSelectedData?.selectIndexFeatureData
+                            ?.unit
+                        }
+                      </span>
+                    ))}
                   </div>
                 </div>
               </div>

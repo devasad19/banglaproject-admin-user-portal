@@ -136,12 +136,20 @@ const CitizenInfoData = ({ id }: { id: string }) => {
               <div className="grid grid-cols-1 gap-2 pb-3">
                 <div className="flex flex-col  gap-2">
                   <div className="flex items-center justify-between">
+                    <div>
                     <p className="text-gray-500 text-14">
-                      Citizen Type:
+                      Current Type:
+                      <span className="text-gray-800 text-16 ms-3">
+                        {singleUser?.citizen_type?.name_en ?? ""}
+                      </span>
+                    </p>
+                    <p className="text-gray-500 text-14">
+                     Request Type:
                       <span className="text-gray-800 text-16 ms-3">
                         {singleUser?.citizen_info?.citizen_type?.name_en ?? ""}
                       </span>
                     </p>
+                    </div>
                     <div className="flex items-center gap-2">
                       <span className="text-16 text-black font-bold">
                         Status :

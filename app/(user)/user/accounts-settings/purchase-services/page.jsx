@@ -207,13 +207,13 @@ const Home = () => {
                                     <Link
                                       href={`${item?.service?.purchase_service_link}getLogin/${item?.order_id}`}
                                     >
-                                      Service Details
+                                      Service 
                                     </Link>
                                   ) : (
                                     <Link
                                       href={`${item?.service?.purchase_service_link}/getLogin/${item?.order_id}`}
                                     >
-                                      Service Details
+                                      Service 
                                     </Link>
                                   )}
                                 </>
@@ -232,7 +232,7 @@ const Home = () => {
                                 }}
                                 shallow
                               >
-                                Purchase Info
+                                Purchase History
                               </Link>
                             </li>
                             <li>
