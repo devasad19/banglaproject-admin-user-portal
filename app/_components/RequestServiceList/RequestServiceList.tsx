@@ -1,22 +1,50 @@
 "use client";
-import React,{ useRef }  from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ApproveModal from "./ApproveModal";
 import { modelOpen } from "@/helper";
+import { OrganizationRequestDataGet } from "@/app/(admin)/_api/organizationRequestApi";
+import { toast } from "react-toastify";
+import { SkeletonLoading } from "../Skeleton/Skeleton";
+import TableSkeleton from "../TableSkeleton/TableSkeleton";
 
 const RequestServiceList = () => {
   const approveModalRef = useRef(null);
+  const [requestData, setRequestData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleApproved = () =>{
+  const fetchRequestData = async () => {
+    try {
+      setLoading(true);
+      const res = await OrganizationRequestDataGet();
+      if (res?.status) {
+        setRequestData(res?.data);
+      } else {
+        toast.error(res?.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to fetch data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRequestData();
+  }, []);
+
+  const handleApproved = () => {
     modelOpen(approveModalRef);
-  }
+  };
 
+  console.log({ requestData });
 
   return (
     <>
       <section>
         <div className="flex flex-wrap justify-between pb-1">
           <h3 className="text-32 font-mono font-bold text-[#151D48]">
-           Organization Service Request List
+            Organization Service Request List
           </h3>
         </div>
         {/* <div className="py-2 flex flex-wrap justify-between pb-4">
@@ -49,34 +77,72 @@ const RequestServiceList = () => {
                 <th className="text-sm text-center px-2">SL</th>
                 <th className="text-sm text-center px-2">Service</th>
                 <th className="text-sm text-center px-2">Organization Name</th>
-                <th className="text-sm text-center px-2">Organization Url</th>
-                <th className="text-sm text-center px-2">Organization Email</th>
-                <th className="text-sm text-center px-2">Organization Ip Address</th>
+                <th className="text-sm text-center px-2">Purpose</th>
+                <th className="text-sm text-center px-2">Payment Info</th>
+                <th className="text-sm text-center px-2">Max User</th>
+                <th className="text-sm text-center px-2">Is Purchase</th>
                 <th className="text-sm text-center px-2">Status</th>
                 <th className="text-sm text-center">Action</th>
               </tr>
             </thead>
             <tbody className="[&>tr]:border-b [&>tr]:border-gray-200 [&>tr]:text-left [&>tr]:h-16 text-12 lg:text-16 ">
-              <tr>
-                <td className="text-sm text-center px-2">1</td>
-                <td className="text-sm text-center px-2">Service Name</td>
-                <td className="text-sm text-center px-2">Service Type</td>
-                <td className="text-sm text-center px-2">Production Status</td>
-                <td className="text-sm text-center px-2">Paid Status</td>
-                <td className="text-sm text-center px-2">Publish/Unpublish</td>
-                <td className="text-sm text-center px-2">Pending</td>
-                <td className="text-sm text-center px-2">
-                  <button onClick={handleApproved} className="bg-primary text-white px-2 py-1 rounded-md">
-                  Approved
-                  </button>
-                  </td>
-              </tr>
+              {loading && <TableSkeleton col={9} row={10} />}
+              {requestData?.length > 0
+                ? requestData.map((item: any, index: number) => (
+                    <tr key={index} className="text-12 lg:text-16">
+                      <td className="text-sm text-center px-2">{index + 1}</td>
+                      <td className="text-sm text-center px-2">Service Name</td>
+                      <td className="text-sm text-center px-2">Service Type</td>
+                      <td className="text-sm text-center px-2">
+                        {item?.purchase_purpose}
+                      </td>
+                      <td className="text-sm text-center px-2">
+                        {item?.payment_info}
+                      </td>
+                      <td className="text-sm text-center px-2">
+                        {item?.max_user}
+                      </td>
+                      <td className="text-sm text-center px-2">
+                        {item?.is_purchase == 0 ? "No" : "Yes"}
+                      </td>
+                      <td className="text-sm text-center px-2">
+                        <span
+                          className={` ${
+                            item?.status == 0
+                              ? "bg-yellow-500"
+                              : item?.status == 1
+                              ? "bg-blue-500"
+                              : "bg-green-500"
+                          } text-white px-2 py-1 rounded-md`}
+                        >
+                          {item?.status == 0 && "Pending"}
+                          {item?.status == 1 && "Fee Payment"}
+                          {item?.status == 2 && "Approved"}
+                        </span>
+                      </td>
+                      <td className="text-sm text-center px-2">
+                        <button
+                          onClick={handleApproved}
+                          className="bg-primary text-white px-2 py-1 rounded-md"
+                        >
+                          Approved
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                : !loading && (
+                    <tr>
+                      <td colSpan={8} className="text-center">
+                        No Data Found
+                      </td>
+                    </tr>
+                  )}
             </tbody>
           </table>
         </div>
       </section>
 
-      <ApproveModal addModal={approveModalRef}/>
+      <ApproveModal addModal={approveModalRef} />
     </>
   );
 };
