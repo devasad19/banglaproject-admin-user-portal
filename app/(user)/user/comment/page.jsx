@@ -37,7 +37,7 @@ const Home = () => {
   return (
     <>
       <section className="bg-white p-4 rounded shadow-lg">
-        <h3 className="text-24 text-slate-900 font-bold pb-5">FeedBacks</h3>
+        <h3 className="text-24 text-slate-900 font-bold pb-5">FeedBack</h3>
         <div className="w-full overflow-x-auto rounded-md">
           <table className="w-full text-left  rounded-md">
             <thead className="h-10 bg-[#006A4E] text-white rounded-md">

@@ -6,18 +6,26 @@ import { relative_image_path } from "@/helper";
 import { toast } from "react-toastify";
 import { changePassword } from "@/app/(user)/_api/user";
 import UserApiLoading from "@/app/(user)/component/UserAPiLoading/UserApiLoading";
+import PasswordChangeImage from "../../../../../public/images/user_password_change.png"
 
 const Home = () => {
   const [showPassOld, setShowPassOld] = useState(false);
   const [showPassNew, setShowPassNew] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [submitState, setSubmitState] = useState(false);
   const [formInputs, setFormInputs] = useState({
     oldPassword: "",
     password: "",
     confirmPassword: "",
   });
   const [user, setUser] = useState(null);
+
+  const [error, setError] = useState({
+    oldPassword: "",
+    password: "",
+    confirmPassword: "",
+  });
 
   useEffect(() => {
     const userCookie = document.cookie
@@ -31,7 +39,6 @@ const Home = () => {
   const HandleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
-
     const form = new FormData();
     form.append("old_password", formInputs?.oldPassword);
     form.append("password", formInputs?.password);
@@ -62,6 +69,36 @@ const Home = () => {
     }
   };
 
+  const handleChanges = (name, value) => {
+    setFormInputs((prev) => ({ ...prev, [name]: value }));
+
+    let errors = { ...error }; // Copy previous errors
+
+    // Password validation
+    if (name === "oldPassword" || name === "password") {
+      errors[name] =
+        value.length < 8 ? "Password must be at least 8 characters" : "";
+    }
+
+    // Confirm password validation
+    if (name === "confirmPassword") {
+      errors.confirmPassword =
+        formInputs.password !== value ? "Confirm Password does not match" : "";
+    }
+
+    setError(errors);
+    // Check if all fields are filled and valid
+    const allFieldsFilled = Object.values({
+      ...formInputs,
+      [name]: value,
+    }).every((val) => val.trim() !== "");
+    const noErrors = Object.values(errors).every((err) => err === "");
+
+    setSubmitState(allFieldsFilled && noErrors);
+  };
+
+  console.log({ submitState });
+
   return (
     <section>
       <h3 className="text-20 font-mono font-bold text-[#151D48] pb-10">
@@ -74,8 +111,8 @@ const Home = () => {
         >
           <div className="flex flex-col items-center gap-3 pb-6 w-[70%]">
             <Image
-              src={relative_image_path("user_password_change.jpg")}
-              className="w-20 h-20 rounded-full border border-slate-900 mb-[20px]"
+              src={PasswordChangeImage}
+              className="w-24 h-24   mb-[20px]"
               width={1000}
               height={1000}
               alt="Bangla"
@@ -84,12 +121,7 @@ const Home = () => {
               <fieldset className="border border-[#979C9E] rounded-md flex items-center py-1 px-2 w-full">
                 <input
                   value={formInputs?.oldPassword}
-                  onChange={(e) =>
-                    setFormInputs({
-                      ...formInputs,
-                      oldPassword: e.target.value,
-                    })
-                  }
+                  onChange={(e) => handleChanges("oldPassword", e.target.value)}
                   type={showPassOld ? "text" : "password"}
                   name="password"
                   id="password"
@@ -124,17 +156,13 @@ const Home = () => {
                   )}
                 </button>
               </fieldset>
-              <p className="text-red-500 text-10 py-1">
-                Password Has to be at least 8 characters
-              </p>
+              <p className="text-red-500 text-10 py-1">{error.oldPassword}</p>
             </div>
             <div>
               <fieldset className="border border-[#979C9E] rounded-md flex items-center py-1 px-2 w-full">
                 <input
                   value={formInputs.password}
-                  onChange={(e) =>
-                    setFormInputs({ ...formInputs, password: e.target.value })
-                  }
+                  onChange={(e) => handleChanges("password", e.target.value)}
                   type={showPassNew ? "text" : "password"}
                   name="password"
                   id="password"
@@ -169,19 +197,14 @@ const Home = () => {
                   )}
                 </button>
               </fieldset>
-              <p className="text-red-500 text-10 py-1">
-                Password Has to be at least 8 characters
-              </p>
+              <p className="text-red-500 text-10 py-1">{error.password}</p>
             </div>
             <div>
               <fieldset className="border border-[#979C9E] rounded-md flex items-center py-1 px-2 w-full">
                 <input
                   value={formInputs.confirmPassword}
                   onChange={(e) =>
-                    setFormInputs({
-                      ...formInputs,
-                      confirmPassword: e.target.value,
-                    })
+                    handleChanges("confirmPassword", e.target.value)
                   }
                   type={showPass ? "text" : "password"}
                   name="confirmPassword"
@@ -218,21 +241,25 @@ const Home = () => {
                 </button>
               </fieldset>
               <p className="text-red-500 text-10 py-1">
-                Password Has to be at least 8 characters
+                {error.confirmPassword}
               </p>
             </div>
           </div>
 
           <button
             type="submit"
-            className="bg-primary text-white px-2 py-1 text-14  lg:px-4 lg:py-1 rounded w-[70%]"
+            disabled={!submitState}
+            className={`px-2 py-1 text-14 lg:px-4 lg:py-1 rounded w-[70%] 
+    ${
+      submitState
+        ? "bg-primary text-white"
+        : "bg-gray-400 text-gray-200 cursor-not-allowed"
+    }`}
           >
             Change Password
           </button>
         </form>
-        {
-          loading && <UserApiLoading/>
-        }
+        {loading && <UserApiLoading />}
       </div>
     </section>
   );

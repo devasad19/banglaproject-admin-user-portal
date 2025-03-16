@@ -9,11 +9,24 @@ import { FaCamera, FaRegEdit } from "react-icons/fa";
 import { updateCitizenProfile, updateCitizenTypeInfo } from "../../_api/user";
 import UserApiLoading from "../UserAPiLoading/UserApiLoading";
 import { MyContext } from "@/ContextProvider/ContextProvider";
+import { useHomeContext } from "@/ContextProvider/Home.Context";
+import { ProfileUpdateValidation } from "./PrfileUpdateValidation";
 
 const ProfileContainer = ({ citizen, userTypes, grade }) => {
-  const { refresh, setRefresh } = useContext(MyContext);
+  // const { refresh, setRefresh } = useContext(MyContext);
+  const { refresh, setRefresh } = useHomeContext();
+  const [profileError, setProfileError] = useState({
+    name: {
+      error: false,
+      message: "",
+    },
+    phone: {
+      error: false,
+      message: "",
+    },
+  });
 
-  console.log({ citizen });
+  // console.log({ citizen });
 
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -130,12 +143,73 @@ const ProfileContainer = ({ citizen, userTypes, grade }) => {
   };
 
   const handleProfileUpdate = async () => {
+   
+    
+    setProfileError({
+      name: {
+        error: false,
+        message: "",
+      },
+      phone: {
+        error: false,
+        message: "",
+      },
+    });
     setLoading(true);
+
     const form = new FormData();
     form.append("id", citizen?.id ?? "");
     form.append("name", formInputs.username ?? "");
     form.append("phone", formInputs.phone ?? "");
     form.append("photo", formInputs.photo ?? "");
+
+    if (formInputs.username == "" && formInputs.phone == "") {
+      setProfileError({
+        name: {
+          error: true,
+          message: "Name is required",
+        },
+        phone: {
+          error: true,
+          message: "Phone is required",
+        },
+      });
+      setLoading(false);
+      return;
+    }
+    if (formInputs.username == "") {
+      setProfileError({
+        ...profileError,
+        name: {
+          error: true,
+          message: "Name is required",
+        },
+        phone:{
+          error:false,
+          message:""
+        }
+
+      });
+      setLoading(false);
+      return;
+    }
+    if (formInputs.phone == "") {
+      setProfileError({
+        ...profileError,
+        phone: {
+          error: true,
+          message: "Phone is required",
+        },
+        name:{
+          error:false,
+          message:""
+        }
+      });
+      setLoading(false);
+      return;
+    }
+    console.log("form inputs", formInputs);
+
     try {
       const response = await updateCitizenProfile(form);
       setEdit(false);
@@ -143,22 +217,7 @@ const ProfileContainer = ({ citizen, userTypes, grade }) => {
         setLoading(false);
         // console.log("user profile update response: ", response);
         toast.success(response.message);
-        // const user = {
-        //   id: response.data.id,
-        //   name: response.data.name ?? null,
-        //   role: response.data.role ?? null,
-        //   email: response.data.email ?? null,
-        //   phone: response.data.phone ?? null,
-        //   status: response.data.status ?? null,
-        //   photo: response.data.photo ?? null,
-        //   type: response.data.type ?? null,
-        // };
-
-        // const userinfo = JSON.stringify(user);
-        // document.cookie = `user=${userinfo};path=/;max-age=31536000;SameSite=Strict;Secure;`;
         setRefresh(!refresh);
-
-        // window.location.reload();
       } else {
         setLoading(false);
         toast.error(response.message);
@@ -169,7 +228,7 @@ const ProfileContainer = ({ citizen, userTypes, grade }) => {
     }
   };
 
-  console.log("type ", formInputs);
+  // console.log("type ", formInputs);
 
   return (
     <>
@@ -180,7 +239,22 @@ const ProfileContainer = ({ citizen, userTypes, grade }) => {
           </h3>
           {!edit && (
             <button
-              onClick={() => setEdit(true)}
+              onClick={() => 
+              {
+                setProfileError({
+                  name: {
+                    error: false,
+                    message: "",
+                  },
+                  phone: {
+                    error: false,
+                    message: "",
+                  },
+                });
+                setEdit(true)
+
+              }
+              }
               className="flex items-center gap-2 border border-primary px-2 py-1 lg:px-4 lg:py-2 rounded-md text-primary text-14 bg-white"
             >
               <span>
@@ -230,11 +304,21 @@ const ProfileContainer = ({ citizen, userTypes, grade }) => {
 
                 {edit && (
                   <div
-                    onClick={() =>
-                      document.getElementById("my_modal_1").showModal()
-                    }
+                    onClick={() => document.getElementById("editImage").click()}
                     className="hidden absolute top-0 left-0 w-full h-full group-hover:flex items-center justify-center bg-black bg-opacity-50 rounded-full cursor-pointer"
                   >
+                    <input
+                      onChange={(e) =>
+                        setFormInputs({
+                          ...formInputs,
+                          photo: e.target.files[0],
+                        })
+                      }
+                      type="file"
+                      hidden
+                      name=""
+                      id="editImage"
+                    />
                     <button>
                       <FaCamera size={20} className="text-white" />
                     </button>
@@ -262,17 +346,24 @@ const ProfileContainer = ({ citizen, userTypes, grade }) => {
                   </p>
 
                   {edit ? (
-                    <input
-                      type="text"
-                      value={formInputs?.username}
-                      onChange={(e) =>
-                        setFormInputs({
-                          ...formInputs,
-                          username: e.target.value,
-                        })
-                      }
-                      className="outline-none border border-gray-300 px-2 py-1 rounded"
-                    />
+                    <div className="flex flex-col gap-2">
+                      <input
+                        type="text"
+                        value={formInputs?.username}
+                        onChange={(e) =>
+                          setFormInputs({
+                            ...formInputs,
+                            username: e.target.value,
+                          })
+                        }
+                        className="outline-none border border-gray-300 px-2 py-1 rounded"
+                      />
+                      {profileError.name.error && (
+                        <span className="text-red-500 text-12">
+                          {profileError.name.message}
+                        </span>
+                      )}
+                    </div>
                   ) : (
                     <p className="text-gray-700">{formInputs?.username}</p>
                   )}
@@ -286,7 +377,8 @@ const ProfileContainer = ({ citizen, userTypes, grade }) => {
                     Phone:
                   </p>
                   {edit ? (
-                    <input
+                    <div className="flex flex-col gap-2">
+                      <input
                       type="text"
                       value={formInputs?.phone}
                       onChange={(e) =>
@@ -294,6 +386,14 @@ const ProfileContainer = ({ citizen, userTypes, grade }) => {
                       }
                       className="outline-none border border-gray-300 px-2 py-1 rounded"
                     />
+                    {
+                      profileError.phone.error && (
+                        <span className="text-red-500 text-12">
+                          {profileError.phone.message}
+                        </span>
+                      )
+                    }
+                    </div>
                   ) : (
                     <p className="text-gray-700">{formInputs?.phone}</p>
                   )}
@@ -787,7 +887,7 @@ const ProfileContainer = ({ citizen, userTypes, grade }) => {
       </section>
 
       {/* image upload modal */}
-      <dialog id="my_modal_1" className="modal">
+      {/* <dialog id="my_modal_1" className="modal">
         <div className="modal-box bg-white">
           <h3 className="font-bold text-lg pb-5">Select Image</h3>
           <div className="flex justify-center pb-5">
@@ -818,13 +918,11 @@ const ProfileContainer = ({ citizen, userTypes, grade }) => {
               <button className="bg-red-500 text-white px-4 py-1 rounded">
                 Cancel
               </button>
-              <button className="bg-blue-500 text-white px-4 py-1 rounded">
-                Upload
-              </button>
+              
             </form>
           </div>
         </div>
-      </dialog>
+      </dialog> */}
     </>
   );
 };

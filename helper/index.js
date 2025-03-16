@@ -367,3 +367,17 @@ export const convertToMinutesAndSeconds = (totalSeconds) => {
   const seconds = totalSeconds % 60;
   return `${minutes} min ${seconds} sec`;
 };
+
+export const checkYoutubeOrVimeo = (url) => {
+  if (
+    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]+)/.test(
+      url
+    )
+  ) {
+    return "youtube";
+  } else if (/vimeo\.com\/(?:video\/)?(\d+)/.test(url)) {
+    return "vimeo";
+  } else {
+    return false;
+  }
+};

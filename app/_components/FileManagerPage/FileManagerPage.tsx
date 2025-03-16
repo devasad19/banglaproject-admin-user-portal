@@ -469,16 +469,16 @@ const FileManagerPage = () => {
                                 <div className="flex items-center justify-center">
                                   <div className="flex items-center gap-2">
                                   {item?.module &&
-                                  item?.module.split(".").pop() == "pdf" ? (
+                                  item?.module?.split(".").pop() == "pdf" ? (
                                     <FaFilePdf size={36} />
                                   ) : null}
 
                                   {item?.module &&
-                                  item?.module.split(".").pop() == "docx" ? (
+                                  item?.module?.split(".").pop() == "docx" ? (
                                     <BsFiletypeDocx size={36} />
                                   ) : null}
                                   <p>
-                                    {item?.module.split("/").pop()}
+                                    {item?.module?.split("/").pop()}
                                   </p>
                                   </div>
                                 </div>

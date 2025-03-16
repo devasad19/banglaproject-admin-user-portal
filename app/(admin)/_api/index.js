@@ -648,3 +648,14 @@ export const updateCitizenTypes = async (payload) => {
     // return new throw Error(error);
   }
 };
+
+  // get single service by id
+  export const getServiceDetails = async (id) => {
+    try{
+      const service = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/service-details/${id}`);
+      return service.data;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };

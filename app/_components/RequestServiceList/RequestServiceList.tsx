@@ -16,6 +16,7 @@ const RequestServiceList = () => {
     try {
       setLoading(true);
       const res = await OrganizationRequestDataGet();
+      // console.log({res});
       if (res?.status) {
         setRequestData(res?.data);
       } else {

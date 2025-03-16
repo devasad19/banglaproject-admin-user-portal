@@ -1,19 +1,24 @@
 "use client";
+import { useHomeContext } from "@/ContextProvider/Home.Context";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import React, {  useEffect } from "react";
 import { useState } from "react";
 
 const UserDashboard = ({ stats }: { stats: any }) => {
-  const [user, setUser] = useState<any>(null);
+  // const [user, setUser] = useState<any>(null);
+  const homeContext = useHomeContext();
+  const user = homeContext ? homeContext.user : null;
+  // console.log("user", user);
+  
 
-  useEffect(() => {
-    let userData: any = Cookies.get("user");
-    if (userData) {
-      userData = JSON?.parse(userData);
-    }
-    setUser(userData);
-  }, []);
+  // useEffect(() => {
+  //   let userData: any = Cookies.get("user");
+  //   if (userData) {
+  //     userData = JSON?.parse(userData);
+  //   }
+  //   setUser(userData);
+  // }, []);
 
   // console.log("user", user);
 

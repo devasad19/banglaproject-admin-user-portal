@@ -303,15 +303,13 @@ const ServiceListContainer = () => {
                               <GrView className="text-white w-4 h-4" />
                             </button>
                           )} */}
-                              <button
-                                onClick={() => {
-                                  handleRedirect(item?.id);
-                                }}
+                              <Link
+                                href={`/admin/service/${item?.id}`}
                                 shallow
                                 className="px-2 py-1 bg-primary  text-white active:scale-90 transition-all duration-400 rounded-md"
                               >
                                 <GrView className="text-white w-4 h-4" />
-                              </button>
+                              </Link>
                               <Link
                                 href={{
                                   pathname: `/admin/services/edit/${item?.id}`,
