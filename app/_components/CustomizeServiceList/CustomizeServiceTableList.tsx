@@ -35,6 +35,7 @@ const CustomizeServiceTableList = ({
             <th className="text-sm text-center px-2">SL</th>
             <th className="text-sm text-center px-2">Name</th>
             <th className="text-sm text-center">logo</th>
+            <th className="text-sm text-center">Status</th>
           </tr>
         </thead>
         {loading ? (
@@ -54,6 +55,7 @@ const CustomizeServiceTableList = ({
                   id={service.id}
                   name={service.name}
                   logo={service.logo}
+                  status={service.status}
                 />
               ))}
             </tbody>

@@ -11,6 +11,7 @@ type TCustomizeServiceBodyList = {
   logo: string;
   page: number;
   limit: number;
+  status: any;
 };
 
 const CustomizeServiceBodyList = ({
@@ -20,12 +21,12 @@ const CustomizeServiceBodyList = ({
   logo,
   page,
   limit,
+  status,
 }: TCustomizeServiceBodyList) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id, data: { index } });
 
-    console.log({page, limit, index});
-    
+  // console.log({page, limit, index});
 
   const style = {
     transform: transform ? CSS.Transform.toString(transform) : undefined,
@@ -43,6 +44,7 @@ const CustomizeServiceBodyList = ({
       <td className="text-center px-2"> {(page - 1) * limit + index}</td>
       <td className="text-center px-2">{name}</td>
       <td className="text-center">
+        <div className="flex justify-center items-center">
         <Image
           className="w-10 h-10 rounded-md"
           src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${logo}`}
@@ -50,9 +52,16 @@ const CustomizeServiceBodyList = ({
           width={1000}
           alt="Bangla"
         />
-        {/* {logo} */}
-        </td>
+        </div>
       
+      </td>
+      <td className="text-center px-2">
+        {status == 1 ? (
+          <span className="text-green-500">Active</span>
+        ) : (
+          <span className="text-red-500">Inactive</span>
+        )}
+      </td>
     </tr>
   );
 };

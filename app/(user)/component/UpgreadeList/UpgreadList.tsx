@@ -274,6 +274,7 @@ const UpgreadList = ({ id, validities }: Tprops) => {
           package_upgrade: 1,
         };
         // console.log({paymentInfo});
+        // return;
         const paymentResponse = await paymentPostApi(paymentInfo);
         const transId = paymentResponse?.data?.transaction_id;
         const response = await fetch(
@@ -310,7 +311,7 @@ const UpgreadList = ({ id, validities }: Tprops) => {
     }
   };
 
-  console.log({ selectedFeatureInfo, activeValidaty });
+  // console.log({ selectedFeatureInfo, activeValidaty });
 
   return (
     <>
@@ -389,7 +390,7 @@ const UpgreadList = ({ id, validities }: Tprops) => {
                             </div>
                           </td>
 
-                          {plans.length > 0 ? (
+                          {plans?.length > 0 ? (
                             plans?.map((pItem: any, planIndex: any) => {
                               let isSelected =
                                 activePlans[fIndex] === planIndex;

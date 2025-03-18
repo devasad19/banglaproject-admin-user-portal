@@ -6,13 +6,13 @@ const NotFound = (): JSX.Element => {
     <>
       <section className="w-full h-screen flex flex-col justify-center items-center">
         <h1 className="text-40 text-primary">
-          দুঃখিত, এই পৃষ্ঠাটি খুঁজে পাওয়া যায়নি
+          Sorry, this page could not be found.
         </h1>
         <button
           className="text-primary border border-primary hover:bg-primary hover:text-white px-[18px] rounded-md mt-3"
           onClick={() => router.back()}
         >
-          ফিরে যান
+          Back to home
         </button>
       </section>
     </>
